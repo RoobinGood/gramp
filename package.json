@@ -1,0 +1,16 @@
+{
+  "name": "apm",
+  "version": "0.0.1",
+  "description": "automated projects manipulator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/RoobinGood/apm.git"
+  },
+  "author": "roobingood",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/RoobinGood/apm#readme"
+}
