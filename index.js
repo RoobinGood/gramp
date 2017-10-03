@@ -46,9 +46,38 @@ var getScript = function(scriptName, config) {
 	return require(scriptPath);
 };
 
+var filterProjects = function(projects, filters) {
+	return _(projects).chain()
+		.filter(function(project) {
+			return !filters.projects ||
+				_(filters.projects).contains(project.name);
+		})
+		.filter(function(project) {
+			return !filters.tags.length ||
+				_(filters.tags).intersection(project.tags).length > 0;
+		})
+		.value();
+};
+
+
+var listOptionParser = function(val) {
+  return val.split(',');
+};
+
 program
 	['arguments']('[options] <script> [scriptArguments...]')
 	.description('Execute script on given projects structure')
+	.option(
+		'-p, --projects <projectNames...>',
+		'list of projects which will be processed',
+		listOptionParser
+	)
+	.option(
+		'-t, --tags <tags...>',
+		'list of tags which will be processed',
+		listOptionParser, []
+	)
+	.allowUnknownOption()
 	.parse(process.argv);
 
 var opts = program.opts();
@@ -64,7 +93,9 @@ async.waterfall([
 	},
 	function(config, callback) {
 		var script = getScript(scriptName, config);
-		var projects = config.projects;
+		var projects = filterProjects(
+			config.projects, opts
+		);
 
 		var statistics = _(projects).map(function(project) {
 			return {
@@ -72,6 +103,7 @@ async.waterfall([
 				status: 'waiting'
 			};
 		});
+
 		async.eachOfLimit(
 			projects,
 			1,
