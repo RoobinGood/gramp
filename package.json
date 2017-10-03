@@ -14,9 +14,9 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/RoobinGood/apm#readme",
   "dependencies": {
-    "async": "^2.5.0",
-    "commander": "^2.11.0",
-    "exec": "^0.2.1",
-    "underscore": "^1.8.3"
+    "async": "2.5.0",
+    "commander": "2.11.0",
+    "exec-cmd": "2.0.1",
+    "underscore": "1.8.3"
   }
 }

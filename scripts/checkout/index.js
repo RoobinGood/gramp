@@ -1,29 +1,64 @@
 'use strict';
 
-var exec = require('exec');
-var asyn = require('async');
+var _ = require('underscore');
+var async = require('async');
+var exec = require('exec-cmd');
+var pathUtils = require('path');
 
 var checkoutGit = function(params, callback) {
-
+	async.waterfall([
+		function(callback) {
+			exec(
+				'git',
+				['rev-parse', '--abbrev-ref', 'HEAD'],
+				{cwd: params.repository.path},
+				callback
+			);
+		},
+		function(result, callback) {
+			callback(null, result[0]);
+		}
+	], callback);
 };
 
 var checkoutHg = function(params, callback) {
-
+	async.waterfall([
+		function(callback) {
+			exec(
+				'hg',
+				['branch'],
+				{cwd: params.repository.path},
+				callback
+			);
+		},
+		function(result, callback) {
+			callback(null, result[0]);
+		}
+	], callback);
 };
 
 exports.run = function(params, callback) {
 	var project = params.project;
 	var args = params.args;
 
+	project.repository.path = pathUtils.join(
+		process.cwd(), params.project.repository.path
+	);
+
+	var commandParams = {
+		repository: project.repository,
+		branch: _(args).first()
+	};
+
 	async.waterfall([
 		function(callback) {
 			switch (project.repository.type) {
 				case 'git':
-					checkoutGit(params, callback);
+					checkoutGit(commandParams, callback);
 					break;
 
 				case 'hg':
-					checkoutHg(params, callback);
+					checkoutHg(commandParams, callback);
 					break;
 
 				default:
@@ -31,6 +66,9 @@ exports.run = function(params, callback) {
 						'Unsupported repository type: ' + project.repository.type
 					);
 			}
+		},
+		function(result, callback) {
+			callback(null, result)
 		}
 	], callback);
 };
