@@ -20,15 +20,6 @@
 			}
 		}
 	],
-	"scripts": [
-		{
-			"name": "checkout",
-			"path": "apm/scripts/checkout"
-		},
-		{
-			"name": "dependency",
-			"path": "apm/scripts/dependency"
-		}
-	]
+	"scripts": []
 }
 ```

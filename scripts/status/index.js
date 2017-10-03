@@ -9,13 +9,17 @@ var checkoutGit = function(params, callback) {
 	async.waterfall([
 		function(callback) {
 			exec(
-				'git', ['checkout', params.branch],
+				'git', ['rev-parse', '--abbrev-ref', 'HEAD'],
 				{cwd: params.repository.path},
 				callback
 			);
 		},
-		function(result, callback) {
-			callback(null, result[0]);
+		function(branchOutput, callback) {
+			var result = {
+				branch: branchOutput[0]
+			};
+
+			callback(null, result);
 		}
 	], callback);
 };
@@ -24,13 +28,17 @@ var checkoutHg = function(params, callback) {
 	async.waterfall([
 		function(callback) {
 			exec(
-				'hg', ['update', params.branch],
+				'hg', ['branch'],
 				{cwd: params.repository.path},
 				callback
 			);
 		},
-		function(result, callback) {
-			callback(null, result[0]);
+		function(branchOutput, callback) {
+			var result = {
+				branch: branchOutput[0]
+			};
+
+			callback(null, result);
 		}
 	], callback);
 };
@@ -40,8 +48,7 @@ exports.run = function(params, callback) {
 	var args = params.args;
 
 	var commandParams = {
-		repository: project.repository,
-		branch: _(args).first()
+		repository: project.repository
 	};
 
 	async.waterfall([

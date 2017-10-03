@@ -6,6 +6,9 @@ var pathUtils = require('path');
 var fsUtils = require('fs');
 var program = require('commander');
 
+var defaultScripts = require('./scripts');
+
+
 var readConfig = function(callback) {
 	async.waterfall([
 		function(callback) {
@@ -16,36 +19,47 @@ var readConfig = function(callback) {
 		function(config, callback) {
 			config = JSON.parse(config);
 
+			config.projects = _(config.projects).map(function(project) {
+				project.repository.path = pathUtils.join(
+					process.cwd(), project.repository.path
+				);
+
+				return project;
+			});
+
 			return callback(null, config);
 		}
 	], callback);
 };
 
-var apmScriptsPathRegexp = /^apm\//;
 var getScript = function(scriptName, config) {
 	var scriptInfo = _(config.scripts).findWhere({name: scriptName});
+
+	// get default apm script if exists
+	if (defaultScripts[scriptName]) return defaultScripts[scriptName];
+
 	if (!scriptInfo) {
-		throw new Error('script ' + scriptName + ' is not specified in config');
+		throw new Error('Unknown script: ' + scriptName);
 	}
 
-	var scriptPath = scriptInfo.path;
-	if (apmScriptsPathRegexp.test(scriptInfo.path)) {
-		scriptPath = scriptPath.replace(apmScriptsPathRegexp, './');
-	}
-
+	var scriptPath = pathUtils.join(process.cwd(), scriptInfo.path);
 	return require(scriptPath);
 };
 
 program
-	['arguments']('<script> [scriptArguments...]')
+	['arguments']('[options] <script> [scriptArguments...]')
 	.description('Execute script on given projects structure')
 	.parse(process.argv);
 
+var opts = program.opts();
 var scriptName = program.args[0];
 var scriptArguments = _(program.args).rest();
 
 async.waterfall([
 	function(callback) {
+		console.log('opts', opts)
+		console.log('args', program.args)
+
 		readConfig(callback);
 	},
 	function(config, callback) {
