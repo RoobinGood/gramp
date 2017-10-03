@@ -3,7 +3,7 @@
 var _ = require('underscore');
 
 _([
-	'checkout', 'dependency', 'status'
+	'checkout', 'npm', 'status'
 ]).each(function(scriptName) {
 	exports[scriptName] = require('./' + scriptName);
 });

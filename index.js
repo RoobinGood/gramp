@@ -86,7 +86,7 @@ var scriptArguments = _(program.args).rest();
 
 async.waterfall([
 	function(callback) {
-		console.log('opts', opts)
+		console.log('opts', program)
 		console.log('args', program.args)
 
 		readConfig(callback);
@@ -106,7 +106,7 @@ async.waterfall([
 
 		async.eachOfLimit(
 			projects,
-			1,
+			3,
 			function(project, index, projectCallback) {
 				statistics[index].status = 'processing';
 
