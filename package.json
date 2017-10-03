@@ -12,5 +12,10 @@
   },
   "author": "roobingood",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/RoobinGood/apm#readme"
+  "homepage": "https://bitbucket.org/RoobinGood/apm#readme",
+  "dependencies": {
+    "async": "^2.5.0",
+    "commander": "^2.11.0",
+    "underscore": "^1.8.3"
+  }
 }
