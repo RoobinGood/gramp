@@ -2,7 +2,7 @@
 
 var _ = require('underscore');
 var async = require('async');
-var exec = require('exec-cmd');
+var exec = require('../../utils/exec').exec;
 
 
 var checkoutGit = function(params, callback) {

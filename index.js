@@ -86,7 +86,7 @@ var scriptArguments = _(program.args).rest();
 
 async.waterfall([
 	function(callback) {
-		console.log('opts', program)
+		console.log('opts', opts)
 		console.log('args', program.args)
 
 		readConfig(callback);
