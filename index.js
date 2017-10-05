@@ -59,6 +59,10 @@ var filterProjects = function(projects, filters) {
 		.value();
 };
 
+var getReporter = function(reporterName) {
+	return require('./reporters/' + reporterName);
+};
+
 
 var listOptionParser = function(val) {
   return val.split(',');
@@ -76,6 +80,11 @@ program
 		'-t, --tags <tags...>',
 		'list of tags which will be processed',
 		listOptionParser, []
+	)
+	.option(
+		'-r, --reporter [reporter]',
+		'which reporter use to log execution statistics, `simple` by default',
+		'simple'
 	)
 	.allowUnknownOption()
 	.parse(process.argv);
@@ -131,7 +140,11 @@ async.waterfall([
 		);
 	},
 	function(statistics, callback) {
-		console.log(statistics)
+		var reporter = getReporter(opts.reporter);
+		reporter.show({
+			statistics: statistics
+		});
+
 		return callback();
 	}
 ], function(err) {

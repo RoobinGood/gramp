@@ -38,82 +38,72 @@ var parseDependencies = function(params) {
 		});
 };
 
-var manageDependency = function(params, callback) {
-	var npmArgs = [params.command];
+var manageDependencies = function(params, callback) {
+	var result = {};
+	async.eachOf(
+		params.dependencies,
+		function(dependency, index, callback) {
+			async.waterfall([
+				function(callback) {
+					var npmArgs = [params.command];
 
-	if (params.type === 'prod') {
-		npmArgs.push('--save')
-	} else {
-		npmArgs.push('--save-dev')
-	}
+					var type = params.type || dependency.type;
+					if (type === 'prod') {
+						npmArgs.push('--save')
+					} else {
+						npmArgs.push('--save-dev')
+					}
 
-	npmArgs.push('--save-exact');
-	npmArgs.push(params.name);
+					npmArgs.push('--save-exact');
+					npmArgs.push(params.name);
 
-	exec(
-		'npm', npmArgs,
-		{cwd: params.cwd},
-		callback
+					exec(
+						'npm', npmArgs,
+						{cwd: params.cwd},
+						callback
+					);
+				},
+				function(commandResult, callback) {
+					result[dependency.raw] = commandResult.exitCode ?
+						commandResult.errData : 'ok';
+
+					callback();
+				}
+			], callback);
+		},
+		function(err) {
+			if (err) return callback(err);
+
+			callback(null, result);
+		}
 	);
 };
 
 var install = function(params, callback) {
-	async.waterfall([
-		function(callback) {
-			async.eachOf(
-				params.dependencies,
-				function(dependency, index, callback) {
-					manageDependency({
-						command: 'install',
-						type: params.dependencyType,
-						name: dependency.raw,
-						cwd: params.repository.path
-					}, callback);
-				},
-				callback
-			);
-		}
-	], callback);
+	manageDependencies({
+		dependencies: params.dependencies,
+		command: 'install',
+		type: params.dependencyType,
+		cwd: params.repository.path
+	}, callback);
 };
 
 var uninstall = function(params, callback) {
-	async.waterfall([
-		function(callback) {
-			async.eachOf(
-				params.dependencies,
-				function(dependency, index, callback) {
-					manageDependency({
-						command: 'uninstall',
-						type: dependency.type,
-						name: dependency.raw,
-						cwd: params.repository.path
-					}, callback);
-				},
-				callback
-			);
-		}
-	], callback);
+	manageDependencies({
+		dependencies: params.dependencies,
+		command: 'uninstall',
+		cwd: params.repository.path
+	}, callback);
 };
 
 var update = function(params, callback) {
-	async.waterfall([
-		function(callback) {
-			var dependencies = _(params.dependencies).where({installed: true});
+	var dependencies = _(params.dependencies).where({installed: true});
 
-			async.eachOf(
-				dependencies,
-				function(dependency, index, callback) {
-					manageDependency({
-						command: 'install',
-						type: dependency.type,
-						name: dependency.raw,
-						cwd: params.repository.path
-					}, callback);
-				},
-				callback
-			);
-		}
-	], callback);
+	manageDependencies({
+		dependencies: dependencies,
+		command: 'install',
+		cwd: params.repository.path
+	}, callback);
 };
 
 exports.run = function(params, callback) {

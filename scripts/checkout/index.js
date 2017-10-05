@@ -15,7 +15,7 @@ var checkoutGit = function(params, callback) {
 			);
 		},
 		function(result, callback) {
-			callback(null, result[0]);
+			callback(null, result);
 		}
 	], callback);
 };
@@ -30,7 +30,7 @@ var checkoutHg = function(params, callback) {
 			);
 		},
 		function(result, callback) {
-			callback(null, result[0]);
+			callback(null, result);
 		}
 	], callback);
 };

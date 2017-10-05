@@ -16,7 +16,7 @@ var checkoutGit = function(params, callback) {
 		},
 		function(branchOutput, callback) {
 			var result = {
-				branch: branchOutput[0]
+				branch: branchOutput.outData.trim()
 			};
 
 			callback(null, result);
@@ -35,7 +35,7 @@ var checkoutHg = function(params, callback) {
 		},
 		function(branchOutput, callback) {
 			var result = {
-				branch: branchOutput[0]
+				branch: branchOutput.outData.trim()
 			};
 
 			callback(null, result);
