@@ -106,20 +106,33 @@ var update = function(params, callback) {
 	}, callback);
 };
 
+var showVersion = function(params, callback) {
+	var packageJson = require(
+		pathUtils.join(params.repository.path, 'package.json')
+	);
+
+	return callback(null, {
+		version: packageJson.version
+	});
+};
+
 exports.run = function(params, callback) {
 	var project = params.project;
 	var args = params.args;
 
 	var command = _(args).first();
-	var dependencies = parseDependencies({
-		repository: project.repository,
-		dependencies: _(args).rest()
-	});
-
 	var commandParams = {
-		repository: project.repository,
-		dependencies: dependencies
+		repository: project.repository
 	};
+
+	var dependencies = _(args).rest();
+	if (!_(dependencies).isEmpty()) {
+		dependencies = parseDependencies({
+			repository: project.repository,
+			dependencies: dependencies
+		});
+		commandParams.dependencies = dependencies;
+	}
 
 	async.waterfall([
 		function(callback) {
@@ -140,6 +153,10 @@ exports.run = function(params, callback) {
 
 				case 'uninstall':
 					uninstall(commandParams, callback);
+					break;
+
+				case 'showVersion':
+					showVersion(commandParams, callback);
 					break;
 
 				default:
