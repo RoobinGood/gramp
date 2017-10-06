@@ -5,8 +5,9 @@ var _ = require('underscore');
 var pathUtils = require('path');
 var fsUtils = require('fs');
 var program = require('commander');
+var expressionify = require('./utils/expressionify').expressionify;
 
-var defaultScripts = require('./scripts');
+var localScripts = require('./scripts');
 
 
 var readConfig = function(callback) {
@@ -32,11 +33,32 @@ var readConfig = function(callback) {
 	], callback);
 };
 
+var filterProjects = function(projects, filters) {
+	var evalTagsExpression;
+	if (filters.tag) {
+		evalTagsExpression = expressionify(filters.tag);
+	}
+
+	return _(projects).chain()
+		.filter(function(project) {
+			return !filters.projects ||
+				_(filters.projects).contains(project.name);
+		})
+		.filter(function(project) {
+			return !filters.tag || evalTagsExpression({
+				parseOperand: function(operand) {
+					return project.tags && project.tags.indexOf(operand) !== -1;
+				}
+			});
+		})
+		.value();
+};
+
 var getScript = function(scriptName, config) {
 	var scriptInfo = _(config.scripts).findWhere({name: scriptName});
 
 	// get default apm script if exists
-	if (defaultScripts[scriptName]) return defaultScripts[scriptName];
+	if (localScripts[scriptName]) return localScripts[scriptName];
 
 	if (!scriptInfo) {
 		throw new Error('Unknown script: ' + scriptName);
@@ -44,19 +66,6 @@ var getScript = function(scriptName, config) {
 
 	var scriptPath = pathUtils.join(process.cwd(), scriptInfo.path);
 	return require(scriptPath);
-};
-
-var filterProjects = function(projects, filters) {
-	return _(projects).chain()
-		.filter(function(project) {
-			return !filters.projects ||
-				_(filters.projects).contains(project.name);
-		})
-		.filter(function(project) {
-			return !filters.tags.length ||
-				_(filters.tags).intersection(project.tags).length > 0;
-		})
-		.value();
 };
 
 var getReporter = function(reporterName) {
@@ -77,9 +86,8 @@ program
 		listOptionParser
 	)
 	.option(
-		'-t, --tags <tags...>',
-		'list of tags which will be processed',
-		listOptionParser, []
+		'-t, --tag [tagExpression]',
+		'boolean expression with tags to filter projects which will be processed'
 	)
 	.option(
 		'-r, --reporter [reporter]',
@@ -95,9 +103,6 @@ var scriptArguments = _(program.args).rest();
 
 async.waterfall([
 	function(callback) {
-		console.log('opts', opts)
-		console.log('args', program.args)
-
 		readConfig(callback);
 	},
 	function(config, callback) {

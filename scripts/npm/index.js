@@ -4,6 +4,7 @@ var _ = require('underscore');
 var async = require('async');
 var exec = require('../../utils/exec').exec;
 var pathUtils = require('path');
+var expressionify = require('expressionify');
 
 var dependencyVersionRegexp = /\b@(.*)$/;
 var parseDependencies = function(params) {
