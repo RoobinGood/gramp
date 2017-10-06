@@ -15,7 +15,11 @@ var checkoutGit = function(params, callback) {
 			);
 		},
 		function(result, callback) {
-			callback(null, result);
+			var info = result.outData || result.errData || '';
+			info = info.trim();
+			callback(null, {
+				info: info
+			});
 		}
 	], callback);
 };
@@ -30,7 +34,11 @@ var checkoutHg = function(params, callback) {
 			);
 		},
 		function(result, callback) {
-			callback(null, result);
+			var info = result.outData || result.errData || '';
+			info = info.trim();
+			callback(null, {
+				info: info
+			});
 		}
 	], callback);
 };
