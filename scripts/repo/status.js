@@ -93,16 +93,16 @@ var checkoutHg = function(params, callback) {
 };
 
 exports.run = function(params, callback) {
-	var project = params.project;
+	var repository = params.repository;
 	var args = params.args;
 
 	var commandParams = {
-		repository: project.repository
+		repository: repository
 	};
 
 	async.waterfall([
 		function(callback) {
-			switch (project.repository.type) {
+			switch (repository.type) {
 				case 'git':
 					checkoutGit(commandParams, callback);
 					break;
@@ -113,7 +113,7 @@ exports.run = function(params, callback) {
 
 				default:
 					throw new Error(
-						'Unsupported repository type: ' + project.repository.type
+						'Unsupported repository type: ' + repository.type
 					);
 			}
 		},
