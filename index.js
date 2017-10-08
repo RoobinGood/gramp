@@ -10,12 +10,10 @@ var expressionify = require('./utils/expressionify').expressionify;
 var localScripts = require('./scripts');
 
 
-var readConfig = function(callback) {
+var readConfig = function(params, callback) {
 	async.waterfall([
 		function(callback) {
-			var configPath = pathUtils.join(process.cwd(), '.apmconfig');
-
-			fsUtils.readFile(configPath, 'utf-8', callback);
+			fsUtils.readFile(params.configPath, 'utf-8', callback);
 		},
 		function(config, callback) {
 			config = JSON.parse(config);
@@ -94,7 +92,11 @@ program
 		'which reporter use to log execution statistics, `simple` by default',
 		'simple'
 	)
-	.allowUnknownOption()
+	.option(
+		'-c, --config [configPath]',
+		'which reporter use to log execution statistics, `simple` by default',
+		pathUtils.join(process.cwd(), '.apmconfig')
+	)
 	.parse(process.argv);
 
 var opts = program.opts();
@@ -103,7 +105,9 @@ var scriptArguments = _(program.args).rest();
 
 async.waterfall([
 	function(callback) {
-		readConfig(callback);
+		readConfig({
+			configPath: opts.config
+		}, callback);
 	},
 	function(config, callback) {
 		var script = getScript(scriptName, config);
