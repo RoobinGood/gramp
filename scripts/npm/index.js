@@ -6,7 +6,6 @@ var exec = require('../../utils/exec').exec;
 var pathUtils = require('path');
 var expressionify = require('expressionify');
 
-var dependencyVersionRegexp = /\b@(.*)$/;
 var parseDependencies = function(params) {
 	var packageJson = require(
 		pathUtils.join(params.repository.path, 'package.json')
@@ -19,12 +18,21 @@ var parseDependencies = function(params) {
 				installed: true
 			};
 
-			var versionMatch = dependencyVersionRegexp.exec(dependency);
-			if (versionMatch && versionMatch.length === 2) {
-				result.version = versionMatch[1];
-				result.name = dependency.replace(versionMatch[0], '');
+			var parts;
+			var scoped = dependency.charAt(0) === '@';
+			if (scoped) {
+				parts = dependency.substr(1).split('@');
+				parts[0] = '@' + parts[0];
 			} else {
-				result.name = dependency;
+				parts = dependency.split('@');
+			}
+
+			var name = parts[0];
+			var version = parts[1];
+
+			result.name = name;
+			if (version) {
+				result.version = version;
 			}
 
 			if (_(packageJson.dependencies).has(result.name)) {
@@ -56,7 +64,7 @@ var manageDependencies = function(params, callback) {
 					}
 
 					npmArgs.push('--save-exact');
-					npmArgs.push(params.name);
+					npmArgs.push(dependency.raw);
 
 					exec(
 						'npm', npmArgs,
