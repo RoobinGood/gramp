@@ -56,7 +56,7 @@ var filterProjects = function(projects, filters) {
 var getScript = function(scriptName, config) {
 	var scriptInfo = _(config.scripts).findWhere({name: scriptName});
 
-	// get default apm script if exists
+	// get default gramp script if exists
 	if (localScripts[scriptName]) return localScripts[scriptName];
 
 	if (!scriptInfo) {
@@ -96,7 +96,7 @@ program
 	.option(
 		'-c, --config [configPath]',
 		'which reporter use to log execution statistics, `simple` by default',
-		pathUtils.join(process.cwd(), '.apmconfig')
+		pathUtils.join(process.cwd(), '.gramprc')
 	)
 	.parse(process.argv);
 

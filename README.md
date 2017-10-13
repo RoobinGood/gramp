@@ -1,8 +1,8 @@
-# APM - automated projects manipulator
+# gramp - repositories group automated manipulator
 
 ## Usage
 
-Create `.apmconfig` file in root of folder that contains all projects and describe projects structure.
+Create `.gramprc` file in root of folder that contains all projects and describe projects structure.
 
 
 ### Scripts
@@ -20,10 +20,10 @@ You can run some commands, such as:
 	* checkout
 * run - execute shell commands
 
-Also you can specify your own scripts in `.apmonfig` `scripts` section.
+Also you can specify your own scripts in `.gramprc` `scripts` section.
 
 
-### `.apmconfig` example
+### `.gramprc` example
 
 ```javascript
 {
@@ -85,20 +85,20 @@ Specify reporter for script execution results. Currently only `simple` available
 
 *-c, --config*
 
-Specify `.apmconfig` file path. Current dirrectory by default.
+Specify `.gramprc` file path. Current dirrectory by default.
 
 
 ### Usage examples
 
 ```
-apm repo status
+gramp repo status
 ```
 
 ```
-apm -t client npm installDev mocha@2.3.0
+gramp -t client npm installDev mocha@2.3.0
 ```
 
 ```
-apm -t "git & innerApi" run "echo 'node_modules' > .gitignore"
-apm -t "git & innerApi" run "git add .gitignore" "git commit -m 'add .gitignore'"
+gramp -t "git & innerApi" run "echo 'node_modules' > .gitignore"
+gramp -t "git & innerApi" run "git add .gitignore" "git commit -m 'add .gitignore'"
 ```

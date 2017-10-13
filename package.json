@@ -1,18 +1,18 @@
 {
-  "name": "apm",
+  "name": "gramp",
   "version": "0.0.1",
-  "description": "automated projects manipulator",
+  "description": "Repositories group automated manipulator",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/RoobinGood/apm.git"
+    "url": "git+ssh://git@github.com:RoobinGood/gramp.git"
   },
   "author": "roobingood",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/RoobinGood/apm#readme",
+  "homepage": "https://github.com/RoobinGood/gramp",
   "dependencies": {
     "async": "2.5.0",
     "cli-progress": "1.6.0",
