@@ -5,6 +5,7 @@ var _ = require('underscore');
 var pathUtils = require('path');
 var fsUtils = require('fs');
 var program = require('commander');
+var Bar = require('cli-progress').Bar;
 var expressionify = require('./utils/expressionify').expressionify;
 
 var localScripts = require('./scripts');
@@ -115,6 +116,11 @@ async.waterfall([
 			config.projects, opts
 		);
 
+		var bar = new Bar({
+			stopOnComplete: true,
+			etaBuffer: Math.ceil(projects.length * 0.1)
+		});
+
 		var statistics = _(projects).map(function(project) {
 			return {
 				project: project,
@@ -122,6 +128,7 @@ async.waterfall([
 			};
 		});
 
+		bar.start(projects.length, 0);
 		async.eachOfLimit(
 			projects,
 			3,
@@ -140,6 +147,7 @@ async.waterfall([
 						statistics[index].result = result;
 					}
 
+					bar.increment();
 					projectCallback();
 				});
 			},

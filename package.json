@@ -15,6 +15,7 @@
   "homepage": "https://bitbucket.org/RoobinGood/apm#readme",
   "dependencies": {
     "async": "2.5.0",
+    "cli-progress": "1.6.0",
     "commander": "2.11.0",
     "expressionify": "0.9.3",
     "underscore": "1.8.3"
