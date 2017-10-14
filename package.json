@@ -12,6 +12,9 @@
   },
   "author": "roobingood",
   "license": "ISC",
+  "bin": {
+    "gramp": "./index.js"
+  },
   "homepage": "https://github.com/RoobinGood/gramp",
   "dependencies": {
     "async": "2.5.0",
