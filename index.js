@@ -77,7 +77,7 @@ var listOptionParser = function(val) {
 };
 
 program
-	['arguments']('[options] <script> [scriptArguments...]')
+	['arguments']('<script> [scriptArguments...]')
 	.description('Execute script on given projects structure')
 	.option(
 		'-p, --projects <projectNames...>',
@@ -95,7 +95,8 @@ program
 	)
 	.option(
 		'-c, --config [configPath]',
-		'which reporter use to log execution statistics, `simple` by default',
+		'which reporter use to log execution statistics, `.gramprc` in working ' +
+		'directory by default',
 		pathUtils.join(process.cwd(), '.gramprc')
 	)
 	.parse(process.argv);

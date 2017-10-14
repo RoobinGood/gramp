@@ -81,7 +81,7 @@ Boolean expression to filter projects by tags.
 
 *-r, --reporter*
 
-Specify reporter for script execution results. Currently only `simple` available.
+Specify reporter for script execution results. Available reporters: `json`, `simple` (by default).
 
 *-c, --config*
 
