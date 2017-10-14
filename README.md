@@ -99,6 +99,6 @@ gramp -t client npm installDev mocha@2.3.0
 ```
 
 ```
-gramp -t "git & innerApi" run "echo 'node_modules' > .gitignore"
-gramp -t "git & innerApi" run "git add .gitignore" "git commit -m 'add .gitignore'"
+gramp -t "git & backend" run "echo 'node_modules' > .gitignore"
+gramp -t "git & backend" run "git add .gitignore" "git commit -m 'add .gitignore'"
 ```
