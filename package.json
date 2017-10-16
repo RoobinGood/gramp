@@ -1,6 +1,6 @@
 {
   "name": "gramp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Repositories group automated manipulator",
   "main": "index.js",
   "scripts": {
