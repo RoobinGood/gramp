@@ -13,7 +13,8 @@ var parseDependencies = function(params) {
 	);
 
 	return _(params.dependencies).map(function(dependency) {
-		npmUtils.parseDependency(dependency, packageJson)
+		var dependencyInfo = npmUtils.parseDependency(dependency);
+		return npmUtils.extendDependencyInfo(dependencyInfo, packageJson);
 	});
 };
 

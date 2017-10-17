@@ -4,8 +4,7 @@ var _ = require('underscore');
 
 exports.parseDependency = function(dependency, packageJson) {
 	var result = {
-		raw: dependency,
-		installed: true
+		raw: dependency
 	};
 
 	var parts;
@@ -25,13 +24,21 @@ exports.parseDependency = function(dependency, packageJson) {
 		result.version = version;
 	}
 
-	if (_(packageJson.dependencies).has(result.name)) {
+	return result;
+};
+
+exports.extendDependencyInfo = function(dependencyInfo, packageJson) {
+	var result = {
+		installed: true
+	};
+
+	if (_(packageJson.dependencies).has(dependencyInfo.name)) {
 		result.type = 'prod';
-	} else if (_(packageJson.devDependencies).has(result.name)) {
+	} else if (_(packageJson.devDependencies).has(dependencyInfo.name)) {
 		result.type = 'dev';
 	} else {
 		result.installed = false;
 	}
 
-	return result;
+	return _(result).extend(dependencyInfo);
 };
