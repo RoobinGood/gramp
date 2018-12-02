@@ -96,6 +96,11 @@ program
 		'simple'
 	)
 	.option(
+		'-n, --concurrency [concurrency]',
+		'number of concurrent execution thread, 3 by default',
+		3
+	)
+	.option(
 		'-c, --config [configPath]',
 		'which reporter use to log execution statistics, `.gramprc` in working ' +
 		'directory by default',
@@ -134,7 +139,7 @@ async.waterfall([
 		bar.start(projects.length, 0);
 		async.eachOfLimit(
 			projects,
-			3,
+			opts.concurrency,
 			function(project, index, projectCallback) {
 				statistics[index].status = 'processing';
 

@@ -87,6 +87,9 @@ Specify reporter for script execution results. Available reporters: `json`, `sim
 
 Specify `.gramprc` file path. Current dirrectory by default.
 
+*-n, --concurrency*
+
+Specify number of concurrent execution threads. 3 by default.
 
 ### Usage examples
 
